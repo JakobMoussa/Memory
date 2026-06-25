@@ -295,3 +295,326 @@
     transform: translateX(0);
   }
 }
+
+
+.game-board {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  flex-shrink: 0;
+
+  &__scores {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__current {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+
+  &::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+}
+
+.current-player-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.btn--exit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  font-size: 16px;
+  font-family: 'Red Rose', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 20px;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    opacity: 0.8;
+    transform: scale(1.03);
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns), 1fr);
+  gap: $card-gap;
+  margin: auto;
+  padding: $spacing-md $spacing-lg;
+}
+
+.card {
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  perspective: 800px;
+
+  &__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: all 300ms ease-in-out;
+    border-radius: $radius-card;
+  }
+
+  &.flipped &__inner,
+  &.matched &__inner {
+    transform: rotateY(180deg);
+  }
+
+  &__back,
+  &__front {
+    position: absolute;
+    inset: 0;
+    border-radius: $radius-card;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__back {
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: $radius-card;
+      display: block;
+    }
+  }
+
+  &__front {
+    transform: rotateY(180deg);
+    padding: 0;
+    border-radius: 5px;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 5px;
+    }
+  }
+
+  &:hover:not(.flipped):not(.matched) &__inner {
+    transform: rotateY(12deg) scale(1.04);
+  }
+
+  &.matched &__inner {
+    animation: matchPulse 0.4s ease;
+  }
+}
+
+@keyframes matchPulse {
+  0% {
+    transform: rotateY(180deg) scale(1);
+  }
+
+  50% {
+    transform: rotateY(180deg) scale(1.08);
+  }
+
+  100% {
+    transform: rotateY(180deg) scale(1);
+  }
+}
+
+.theme--dark {
+  background-color: $theme-dark-bg;
+  color: $color-white;
+
+  .game-header {
+    background-color: rgba(#000, 0.25);
+    border-bottom: 1px solid rgba($theme-dark-accent, 0.15);
+  }
+
+  .score--blue {
+    color: #4A90D9;
+
+    &::before {
+      background-color: #4A90D9;
+    }
+  }
+
+  .score--orange {
+    color: #E87D2B;
+
+    &::before {
+      background-color: #E87D2B;
+    }
+  }
+
+  .game-header__current {
+    color: $color-white;
+  }
+
+  .btn--exit {
+    color: $color-white;
+    border: 2px solid rgba($color-white, 0.5);
+    border-radius: 4px;
+
+    &:hover {
+      border-color: $color-white;
+    }
+  }
+
+  .card__back {
+    background: linear-gradient(145deg, lighten($theme-dark-accent, 5%), $theme-dark-accent);
+  }
+
+  .card.matched .card__back {
+    box-shadow: 0 0 0 3px #4A90D9, 0 0 14px rgba(#4A90D9, 0.5);
+  }
+}
+
+// ── Theme: Blue ──────────────────────────────
+
+.theme--blue {
+  background-color: #ffffff;
+  color: $text-color;
+
+  .game-header {
+    background-color: #F0F4F8;
+    border-bottom: 1px solid #D0DCE8;
+  }
+
+  .score--blue {
+    color: #1A3A4A;
+
+    &::before {
+      background-color: #1A3A4A;
+      border-radius: 50%;
+    }
+  }
+
+  .score--orange {
+    color: #E87D2B;
+
+    &::before {
+      background-color: #E87D2B;
+      border-radius: 50%;
+    }
+  }
+
+  .game-header__current {
+    color: $theme-blue-bg;
+  }
+
+  .btn--exit {
+    color: $theme-blue-bg;
+    border: 2px solid $theme-blue-bg;
+    border-radius: 8px;
+    background-color: #D8E8F4;
+
+    &:hover {
+      background-color: darken(#D8E8F4, 6%);
+    }
+  }
+
+  .card__back {
+    background-color: #1C5270;
+  }
+
+  .card.matched .card__back {
+    box-shadow: 0 0 0 3px #4A90D9, 0 0 14px rgba(#4A90D9, 0.4);
+  }
+}
+
+.theme--orange {
+  background-color: #FAF6F0;
+  color: $text-color;
+
+  .game-header {
+    background-color: #EDE5D8;
+    border-bottom: 1px solid darken(#EDE5D8, 8%);
+    font-family: 'Almarai', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .score--blue {
+    color: #4A7FC1;
+
+    &::before {
+      background-color: #4A7FC1;
+      border-radius: 50%;
+    }
+  }
+
+  .score--orange {
+    color: #E87D2B;
+
+    &::before {
+      background-color: #E87D2B;
+      border-radius: 50%;
+    }
+  }
+
+  .game-header__current {
+    color: $text-color;
+    font-family: 'Almarai', sans-serif;
+  }
+
+  .btn--exit {
+    color: $text-color;
+    border: 2px solid $text-color;
+    border-radius: 20px;
+    background: transparent;
+    font-family: 'Almarai', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 14px;
+
+    &:hover {
+      background-color: rgba($text-color, 0.08);
+    }
+  }
+
+  .card__back {
+    background-color: $theme-orange-bg;
+  }
+
+  .card.matched .card__back {
+    box-shadow: 0 0 0 3px darken($theme-orange-bg, 20%), 0 0 14px rgba($theme-orange-bg, 0.5);
+  }
+}
+
+.card {
+  width: 120px;
+  height: 120px;
+}

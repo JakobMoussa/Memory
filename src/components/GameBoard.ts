@@ -1,5 +1,14 @@
 import type { GameSettings } from '../types/index';
 import { themeImages } from '../components/cardImages';
+import backCard1 from '../assets/Themes/Theme-1/back-card.svg';
+import backCard2 from '../assets/Themes/Theme-2/back-card.svg';
+import backCard3 from '../assets/Themes/Theme-3/back-card.svg';
+
+const themeBackCards: Record<string, string> = {
+    dark: backCard1,
+    blue: backCard2,
+    orange: backCard3,
+};
 
 interface Card {
     value: string;
@@ -30,8 +39,8 @@ export function renderGameBoard(
     settings: GameSettings,
 ): void {
 
-    const columns = settings.boardSize === 36 ? 6 : 4;
-
+    const columns = settings.boardSize === 16 ? 4 : 6;
+    const backCardSrc = themeBackCards[settings.theme]!;
     const cards = generateCards(settings.boardSize, settings.theme);
 
     appEL.innerHTML = `
@@ -50,11 +59,14 @@ export function renderGameBoard(
 
             <main class="card-grid" 
                 id="card-grid"
+                data-size="${settings.boardSize}"
                 style="--columns: ${columns}">
                     ${cards.map((card, index) => `
                     <div class="card" data-id="${index}" data-value="${card.value}">
                         <div class="card__inner">
-                            <div class="card__back"></div>
+                            <div class="card__back">
+                                <img src="${backCardSrc}" alt="" class="card__back-img">
+                            </div>
                             <div class="card__front">
                                 <img src="${card.value}" alt="card icon">
                             </div>
@@ -65,4 +77,12 @@ export function renderGameBoard(
             </main>
         </div>
     `;
+
+    const cardElements = appEL.querySelectorAll('.card');
+    cardElements.forEach((card) => {
+        card.addEventListener('click', () => {
+            card.classList.toggle('flipped');
+        });
+    });
 }
+
