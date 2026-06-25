@@ -7,3 +7,9 @@ export interface GameSettings {
   player: Player;
   boardSize: BoardSize;
 }
+
+export interface PartialSettings {
+  theme?: Theme;
+  player?: Player;
+  boardSize?: BoardSize;
+}

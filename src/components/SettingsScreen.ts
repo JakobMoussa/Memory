@@ -1,10 +1,11 @@
-import type { GameSettings } from '../types/index';
+import type { GameSettings, PartialSettings } from '../types/index';
 import darkPreview from '../assets/images/Property 1=IT logos.png';
 import bluePreview from '../assets/images/Property 2=DA projects.png';
 import orangePreview from '../assets/images/Property 3=foods.png';
 import paletteIcon from '../assets/icons/palette.svg';
 import lineCheckIcon from '../assets/icons/Line 3 (1).svg';
 import controllerIcon from '../assets/icons/smart_display.svg';
+import disabledBtnImg from '../assets/images/disabled-btn.svg';
 
 const themePreviews = {
     dark: darkPreview,
@@ -16,11 +17,7 @@ export function renderSettingsScreen(
     appEL: HTMLElement,
     onStart: (settings: GameSettings) => void
 ): void {
-    let currentSettings: GameSettings = {
-        theme: 'dark',
-        player: 'Blue',
-        boardSize: 16,
-    };
+    let currentSettings: PartialSettings = {};
 
     appEL.innerHTML = `
         <div class="settings-screen">
@@ -37,7 +34,7 @@ export function renderSettingsScreen(
                     <h3 class="settings-group__title">Game themes</h3>
                 </div>
                 <div class="settings-options" data-group="theme">
-                <button class="option-btn active" data-value="dark">Code vibes theme<img class="option-btn__arrow" src="${lineCheckIcon}" alt=""></button>
+                <button class="option-btn" data-value="dark">Code vibes theme<img class="option-btn__arrow" src="${lineCheckIcon}" alt=""></button>
                 <button class="option-btn" data-value="blue">DA project theme<img class="option-btn__arrow" src="${lineCheckIcon}" alt=""></button>
                 <button class="option-btn" data-value="orange">Foods theme<img class="option-btn__arrow" src="${lineCheckIcon}" alt=""></button>
                 </div>
@@ -83,7 +80,15 @@ export function renderSettingsScreen(
                     <span id="bar-player">Blue Player</span>
                     <img class="settings-screen__bar-divider" src="${lineCheckIcon}" alt="">
                     <span id="bar-size">Board-16 Cards</span>
-                    <button class="btn btn--primary" id="start-btn">Start<img class="controller-icon" src="${controllerIcon}" alt="controller-icon"></button>
+                    <div class="start-btn-wrapper">
+                        <img
+                            class="start-btn-disabled"
+                            id="disabled-btn"
+                            src="${disabledBtnImg}"
+                            alt="Bitte alle Optionen wählen"
+                        >
+                        <button class="btn btn--primary start-btn--hidden" id="start-btn">Start<img class="controller-icon" src="${controllerIcon}" alt="controller-icon"></button>
+                    </div>
                 </div>
             </div>
 
@@ -113,7 +118,7 @@ export function renderSettingsScreen(
             }
 
             const previewImg = document.getElementById('theme-preview') as HTMLImageElement;
-            if (previewImg) {
+            if (previewImg && currentSettings.theme) {
                 previewImg.src = themePreviews[currentSettings.theme];
             }
 
@@ -124,12 +129,36 @@ export function renderSettingsScreen(
             if (group === 'theme' && barTheme) barTheme.textContent = btn.textContent;
             if (group === 'player' && barPlayer) barPlayer.textContent = btn.textContent;
             if (group === 'boardSize' && barSize) barSize.textContent = btn.textContent;
+            const disabledBtn = document.getElementById('disabled-btn') as HTMLImageElement;
+            const startBtn = document.getElementById('start-btn') as HTMLButtonElement;
+            const allSelected =
+                currentSettings.theme !== undefined &&
+                currentSettings.player !== undefined &&
+                currentSettings.boardSize !== undefined;
+
+            if (allSelected) {
+                disabledBtn?.classList.add('start-btn--hidden');
+                startBtn?.classList.remove('start-btn--hidden');
+            } else {
+                disabledBtn?.classList.remove('start-btn--hidden');
+                startBtn?.classList.add('start-btn--hidden');
+            }
         });
     });
-
-    const startBtn = document.getElementById('start-btn');
+    const startBtn = document.getElementById('start-btn') as HTMLButtonElement;
     startBtn?.addEventListener('click', () => {
-        onStart(currentSettings);
+
+        if (
+            currentSettings.theme === undefined ||
+            currentSettings.player === undefined ||
+            currentSettings.boardSize === undefined
+        ) return;
+
+        onStart({
+            theme: currentSettings.theme,
+            player: currentSettings.player,
+            boardSize: currentSettings.boardSize,
+        });
     });
 }
 

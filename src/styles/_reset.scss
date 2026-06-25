@@ -6,9 +6,13 @@
   padding: 0;
 }
 
+html {
+  overflow: hidden;
+  height: 100vh;
+}
+
 body {
   font-family: 'Red Rose', sans-serif;
-  min-height: 100vh;
 }
 
 @font-face {

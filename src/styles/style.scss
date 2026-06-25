@@ -7,7 +7,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   color: $color-white;
   gap: $spacing-md;
   font-family: 'Red Rose', sans-serif;
@@ -15,6 +15,11 @@
   .btn--primary {
     background-color: $startScreen-btn;
     color: $color-dark;
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
   }
 
   &__header {
@@ -97,7 +102,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #ffffff;
   color: $text-color;
   padding: 64px 90px 64px 180px;
@@ -166,6 +171,25 @@
     font-weight: 700;
     font-size: $font-size-mdp;
   }
+
+  .start-btn-wrapper {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .start-btn-disabled {
+    height: 100%;
+    width: auto;
+    cursor: not-allowed;
+    transition: opacity 0.25s ease;
+  }
+}
+
+.start-btn--hidden {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.25s ease;
 }
 
 .palette-icon {
