@@ -8,8 +8,11 @@ const app = document.getElementById('app');
 if (!app) throw new Error('No #app element found');
 
 renderStartScreen(app, () => {
-  renderSettingsScreen(app, (settings: GameSettings) => {
-    renderGameBoard(app, settings);
-  });
+  const showSettings = () => {
+    renderSettingsScreen(app, (settings: GameSettings) => {
+      renderGameBoard(app, settings, showSettings);
+    });
+  };
+  showSettings();
 });
 
