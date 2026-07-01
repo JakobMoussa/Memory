@@ -1,5 +1,6 @@
 import type { GameSettings } from '../types/index';
 import { themeImages } from '../components/cardImages';
+import { renderGameOver } from './GameOver';
 import backCard1 from '../assets/Themes/Theme-1/back-card.svg';
 import backCard2 from '../assets/Themes/Theme-2/back-card.svg';
 import backCard3 from '../assets/Themes/Theme-3/back-card.svg';
@@ -35,6 +36,10 @@ interface Card {
     theme: string;
 }
 
+type Player = 'Blue' | 'Orange';
+
+const WRONG_PAIR_DELAY_MS = 1000;
+
 function generateCards(boardSize: number, theme: string): Card[] {
     const pairs = boardSize / 2;
 
@@ -65,6 +70,15 @@ export function renderGameBoard(
     const exitButtonSrc = themeExitButtons[settings.theme]!;
     const exitButtonHoverSrc = themeExitHoverButtons[settings.theme]!;
     const cards = generateCards(settings.boardSize, settings.theme);
+
+    // --- Game state ---
+    let currentPlayer: Player = settings.player;
+    let scoreBlue = 0;
+    let scoreOrange = 0;
+    let matchedCount = 0;
+    let isBoardLocked = false;
+    let firstCard: HTMLElement | null = null;
+    let secondCard: HTMLElement | null = null;
 
     appEL.innerHTML = `
         <div class="game-board theme--${settings.theme}">
@@ -116,11 +130,85 @@ export function renderGameBoard(
         </div>
     `;
 
-    const cardElements = appEL.querySelectorAll('.card');
+    const currentPlayerEl = appEL.querySelector<HTMLElement>('#current-player');
+    const scoreBlueEl = appEL.querySelector<HTMLElement>('#score-blue');
+    const scoreOrangeEl = appEL.querySelector<HTMLElement>('#score-orange');
+
+    function updateCurrentPlayerIcon(): void {
+        if (!currentPlayerEl) return;
+        const icon = currentPlayer === 'Blue' ? blueLabel : orangeLabel;
+        currentPlayerEl.innerHTML = `<img class="current-player-icon" src="${icon}" alt="${currentPlayer}">`;
+    }
+
+    function switchPlayer(): void {
+        currentPlayer = currentPlayer === 'Blue' ? 'Orange' : 'Blue';
+        updateCurrentPlayerIcon();
+    }
+
+    function addPoint(): void {
+        if (currentPlayer === 'Blue') {
+            scoreBlue++;
+            if (scoreBlueEl) scoreBlueEl.textContent = String(scoreBlue);
+        } else {
+            scoreOrange++;
+            if (scoreOrangeEl) scoreOrangeEl.textContent = String(scoreOrange);
+        }
+    }
+
+    function resetSelection(): void {
+        firstCard = null;
+        secondCard = null;
+        isBoardLocked = false;
+    }
+
+    function handleCardClick(card: HTMLElement): void {
+        if (isBoardLocked) return;
+        if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+        card.classList.add('flipped');
+
+        if (!firstCard) {
+            firstCard = card;
+            return;
+        }
+
+        secondCard = card;
+        isBoardLocked = true;
+
+        const isMatch = firstCard.dataset.value === secondCard.dataset.value;
+
+        if (isMatch) {
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            matchedCount += 2;
+
+            addPoint();
+            resetSelection();
+
+            if (matchedCount === cards.length) {
+                isBoardLocked = true;
+                setTimeout(() => {
+                    renderGameOver(appEL, {
+                        settings,
+                        scoreBlue,
+                        scoreOrange,
+                        onRestart: onExit,
+                    });
+                }, 5000);
+            }
+        } else {
+            setTimeout(() => {
+                firstCard?.classList.remove('flipped');
+                secondCard?.classList.remove('flipped');
+                resetSelection();
+                switchPlayer();
+            }, WRONG_PAIR_DELAY_MS);
+        }
+    }
+
+    const cardElements = appEL.querySelectorAll<HTMLElement>('.card');
     cardElements.forEach((card) => {
-        card.addEventListener('click', () => {
-            card.classList.toggle('flipped');
-        });
+        card.addEventListener('click', () => handleCardClick(card));
     });
 
     const exitBtn = appEL.querySelector('#exit-btn');
@@ -147,4 +235,3 @@ export function renderGameBoard(
         onExit();
     });
 }
-

@@ -1,5 +1,6 @@
 @use 'reset';
 @use 'variables' as *;
+@use 'gameover';
 
 .start-screen {
   background-color: $startScreen-bg;
@@ -613,12 +614,20 @@
   }
 }
 
-.card {
+.card-grid[data-size="16"] .card {
   width: 120px;
   height: 120px;
 }
 
-/* ── Exit Modal ────────────────────────────── */
+.card-grid[data-size="24"] .card {
+  width: 120px;
+  height: 120px;
+}
+
+.card-grid[data-size="36"] .card {
+  width: 100px;
+  height: 100px;
+}
 
 .exit-modal-overlay {
   position: fixed;
@@ -685,7 +694,6 @@
   border: none;
 }
 
-// Modal styling adapted per theme
 .theme--dark {
   .exit-modal-card {
     background-color: #ffffff;

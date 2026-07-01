@@ -36,6 +36,7 @@ import chefshat from '../assets/Themes/Theme-2/card/chefshat.svg';
 import flower from '../assets/Themes/Theme-2/card/flower.svg';
 import money from '../assets/Themes/Theme-2/card/money.svg';
 import cook from '../assets/Themes/Theme-2/card/cook.svg';
+import logo from '../assets/Themes/Theme-2/card/logo.svg';
 
 // Theme-3 (Orange) → assets/Themes/Theme-3/card/
 import sandwish from '../assets/Themes/Theme-3/card/sandwish.svg';
@@ -64,7 +65,7 @@ export const themeImages: Record<string, string[]> = {
     ],
     blue: [
         person, shark, shoppingBack, pokemon, conversations, emoji, hat, icon,
-        join, soup, noodles, table, egg, chefshat, flower, money, cook
+        join, soup, noodles, table, egg, chefshat, flower, money, cook, logo
     ],
     orange: [
         sandwish, frise, choclete, choclateCake, role, chicken, tacos, eiscreme,
