@@ -13,6 +13,16 @@ const themePreviews = {
     orange: orangePreview,
 };
 
+/**
+ * Renders the settings screen and attaches all related event handlers.
+ *
+ * The player can select a theme, player colour, and board size.
+ * Once all three options are chosen, the Start button becomes visible.
+ * Clicking "Start" calls `onStart` with the completed settings.
+ *
+ * @param appEL - The root HTML element into which the settings screen is rendered.
+ * @param onStart - Callback invoked with the final {@link GameSettings} when the player starts the game.
+ */
 export function renderSettingsScreen(
     appEL: HTMLElement,
     onStart: (settings: GameSettings) => void

@@ -160,7 +160,6 @@
         }
     }
 
-    // Score Bar styling for Theme 1
     .game-over-screen__score-bar {
         background-color: #3B4D49;
         color: $color-white;
@@ -207,8 +206,12 @@
 
 // ── Theme 2: Blue ──────────────────────────────
 .theme--blue {
-    background-color: #303131;
+    background-color: #ffffff;
     color: #1A3A4A;
+
+    .game-over-screen--celebrate {
+        background-color: #1D7594;
+    }
 
     .game-over-screen__title,
     .game-over-screen__winner-label {
@@ -220,11 +223,11 @@
 
     .game-over-screen__winner-label {
         &--blue {
-            color: #1A3A4A;
+            color: #ffffff;
         }
 
         &--orange {
-            color: #E87D2B;
+            color: #ffffff;
         }
     }
 

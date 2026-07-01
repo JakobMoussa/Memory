@@ -4,6 +4,16 @@ import controllerIcon from '../assets/icons/controller-icon.svg';
 import arrowIcon from '../assets/icons/Arrow-icon.svg';
 import stadiaController from '../assets/icons/stadia_controller.svg';
 
+/**
+ * Renders the start screen of the application.
+ *
+ * Displays the title and a Play button. Clicking the button calls
+ * `onPlay` with default settings (theme `'dark'`, player `'Blue'`, board size `16`).
+ *
+ * @param appEL - The root HTML element into which the start screen is rendered.
+ * @param onPlay - Callback invoked with the default {@link GameSettings}
+ *   when the player clicks "Play".
+ */
 export function renderStartScreen(
   appEL: HTMLElement,
   onPlay: (settings: GameSettings) => void

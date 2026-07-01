@@ -42,24 +42,48 @@ interface GameOverParams {
     onRestart: () => void;
 }
 
+/**
+ * Determines the winner based on the final scores of both players.
+ *
+ * @param scoreBlue - Total points scored by the Blue player.
+ * @param scoreOrange - Total points scored by the Orange player.
+ * @returns `'Blue'` or `'Orange'` for the winner, or `'Draw'` if scores are equal.
+ */
 function getWinner(scoreBlue: number, scoreOrange: number): Winner {
     if (scoreBlue > scoreOrange) return 'Blue';
     if (scoreOrange > scoreBlue) return 'Orange';
     return 'Draw';
 }
 
+const themeSmallIcons: Record<string, Record<Player, string>> = {
+    dark: { Blue: blueLabel, Orange: orangeLabel },
+    blue: { Blue: playerBlue2, Orange: playerOrange2 },
+    orange: { Blue: playerBlue3, Orange: playerOrange3 },
+};
+
+/**
+ * Builds the HTML for the final score screen showing both players' scores.
+ *
+ * @param theme - The active game theme (e.g. `'dark'`, `'blue'`, `'orange'`).
+ * @param scoreBlue - Final score of the Blue player.
+ * @param scoreOrange - Final score of the Orange player.
+ * @returns HTML string of the final score screen.
+ */
 function renderFinalScoreScreen(theme: string, scoreBlue: number, scoreOrange: number): string {
+    const blueIcon = themeSmallIcons[theme]!['Blue'];
+    const orangeIcon = themeSmallIcons[theme]!['Orange'];
+
     return `
         <div class="game-over-screen game-over-screen--score" data-screen="score">
             <h2 class="game-over-screen__title">Game over</h2>
             <p class="game-over-screen__subtitle">Final score</p>
             <div class="game-over-screen__score-bar">
                 <span class="score-bar-item score-bar-item--blue">
-                    <img class="score-bar-item__icon" src="${blueLabel}" alt="blue">
+                    <img class="score-bar-item__icon" src="${blueIcon}" alt="blue">
                     Blue <strong class="score-bar-item__value">${scoreBlue}</strong>
                 </span>
                 <span class="score-bar-item score-bar-item--orange">
-                    <img class="score-bar-item__icon" src="${orangeLabel}" alt="orange">
+                    <img class="score-bar-item__icon" src="${orangeIcon}" alt="orange">
                     Orange <strong class="score-bar-item__value">${scoreOrange}</strong>
                 </span>
             </div>
@@ -67,6 +91,15 @@ function renderFinalScoreScreen(theme: string, scoreBlue: number, scoreOrange: n
     `;
 }
 
+/**
+ * Builds the HTML for the winner/draw celebration screen.
+ *
+ * When the theme is `'dark'` and there is a clear winner, confetti is shown.
+ *
+ * @param theme - The active game theme (e.g. `'dark'`, `'blue'`, `'orange'`).
+ * @param winner - The winner of the game (`'Blue'`, `'Orange'`, or `'Draw'`).
+ * @returns HTML string of the celebration screen.
+ */
 function renderCelebrateScreen(theme: string, winner: Winner): string {
     const showConfetti = theme === 'dark' && winner !== 'Draw';
     const scaleIcon = themeScaleIcons[theme]!;
@@ -91,6 +124,12 @@ function renderCelebrateScreen(theme: string, winner: Winner): string {
     `;
 }
 
+/**
+ * Attaches the event handler for the "Back to start" button on the celebration screen.
+ *
+ * @param appEL - The root HTML element in which the button is queried.
+ * @param onRestart - Callback invoked when the button is clicked.
+ */
 function attachCelebrateHandlers(appEL: HTMLElement, onRestart: () => void): void {
     const backBtn = appEL.querySelector<HTMLButtonElement>('#back-to-start-btn');
     backBtn?.addEventListener('click', () => {
@@ -98,6 +137,18 @@ function attachCelebrateHandlers(appEL: HTMLElement, onRestart: () => void): voi
     });
 }
 
+/**
+ * Performs the visual transition from the score screen to the celebration screen.
+ *
+ * The celebration screen is inserted into `wrapper` and its event handlers are attached.
+ * The score screen is then removed after a short delay.
+ *
+ * @param wrapper - The container element that holds both screens.
+ * @param theme - The active game theme.
+ * @param winner - The winner of the game.
+ * @param appEL - The root HTML element of the application.
+ * @param onRestart - Callback invoked when the player clicks "Back to start".
+ */
 function transitionToCelebrateScreen(
     wrapper: HTMLElement,
     theme: string,
@@ -118,6 +169,15 @@ function transitionToCelebrateScreen(
     }, 100);
 }
 
+/**
+ * Renders the complete game-over flow inside the app container.
+ *
+ * First displays the final score screen, then automatically transitions
+ * to the celebration screen after {@link CELEBRATE_DELAY_MS}.
+ *
+ * @param appEL - The root HTML element into which the game-over section is inserted.
+ * @param params - Game parameters and callbacks; see {@link GameOverParams}.
+ */
 export function renderGameOver(appEL: HTMLElement, params: GameOverParams): void {
     const { settings, scoreBlue, scoreOrange, onRestart } = params;
     const theme = settings.theme;

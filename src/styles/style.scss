@@ -526,8 +526,6 @@
   .game-header__current {
     color: $theme-blue-bg;
   }
-
-
 }
 
 .card__back {
@@ -537,7 +535,6 @@
 .card.matched .card__back {
   box-shadow: 0 0 0 3px #4A90D9, 0 0 14px rgba(#4A90D9, 0.4);
 }
-
 
 // ── Theme: Orange ──────────────────────────────
 
@@ -749,7 +746,6 @@
       background-color: rgb(7, 100, 146);
       color: #FFFFFF;
       box-shadow: 7px 5px 5px rgba(0, 0, 0, 0.179);
-
     }
   }
 
